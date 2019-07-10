@@ -76,7 +76,7 @@ assemblies.list: $(ASSEMBLIES)
 .PHONY: assemble
 	$(MAKE) assemblies.list
 
-.PHONE: all
+.PHONY: all
 	$(MAKE) alignments
 	$(MAKE) vars
 	$(MAKE) assemble
