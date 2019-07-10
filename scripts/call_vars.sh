@@ -58,7 +58,8 @@ grep PASS vars/${SAMPLE}_filtered_snps_final.vcf | awk '$4=="A"||$4=="C"||$4=="G
 grep "#" vars/${SAMPLE}_filtered_snps_final.vcf > vars/${SAMPLE}_final.head
 cat vars/temp/${SAMPLE}_final.head vars/${SAMPLE}_final_snps.body > vars/${SAMPLE}_final_snps.vcf
 
-grep PASS vars/${SAMPLE}_filtered_indels_final.vcf | awk '$4=="A"||$4=="C"||$4=="G"||$4=="T"' | awk '$5=="A"||$5=="C"||$5=="G"||$5=="T"' > vars${SAMPLE}_final_indels.body
+grep PASS vars/${SAMPLE}_filtered_indels_final.vcf | awk
+'$4=="A"||$4=="C"||$4=="G"||$4=="T"' | awk '$5=="A"||$5=="C"||$5=="G"||$5=="T"'> vars/${SAMPLE}_final_indels.body
 grep "#" vars/${SAMPLE}_filtered_indels_final.vcf > vars/${SAMPLE}_final_indels.head
 cat vars/${SAMPLE}_final_indels.head vars/${SAMPLE}_final_indels.body > vars/${SAMPLE}_final_indels.vcf
 

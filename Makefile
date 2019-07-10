@@ -39,7 +39,7 @@ indices: $(REF)
 # Not sure if there is a better way to handle multi-target recipies. Workaround
 # here is to create a recipe (bams.list) that depends on all bam files
 #
-bam/%.bam: fq/%_1.fastq fq/%_2.fastq include/picard.jar $(indices)
+bam/%.bam: fq/%_1.fastq fq/%_2.fastq include/picard.jar indices
 	scripts/make_bam.sh $* $(REF) $(NPROC) > logs/$(*)_ali.log 
 
 bams.list: $(BAM)
