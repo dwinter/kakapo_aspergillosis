@@ -74,9 +74,13 @@ assemblies.list: $(ASSEMBLIES)
 	find de_novo/ -maxdepth 1 -iname *_spades.fna > assemblies.list
 
 .PHONY: assemble
+
+assemble:
 	$(MAKE) assemblies.list
 
 .PHONY: all
+
+all:
 	$(MAKE) alignments
 	$(MAKE) vars
 	$(MAKE) assemble
