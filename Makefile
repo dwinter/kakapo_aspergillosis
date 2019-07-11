@@ -9,7 +9,7 @@ ST_IDX = $(addsuffix .fai, $(REF))
 SAMPLE_LIST := $(shell cat sample_info)
 BAM=$(addsuffix .bam, $(addprefix bam/, $(SAMPLE_LIST)))
 VARS=$(addsuffix _filtered_snps_final.vcf, $(addprefix vars/, $(SAMPLE_LIST)))
-ASSEMBLIES=$(addsuffix _spades.fna, $(addprefix de_novo, $(SAMPLE_LIST)))
+ASSEMBLIES=$(addsuffix _spades.fna, $(addprefix de_novo/, $(SAMPLE_LIST)))
 
 
 #PREP for analyses
@@ -58,7 +58,7 @@ vars/%_filtered_snps_final.vcf: bam/%.bam
 	scripts/call_vars.sh bam/$(*).bam $(REF) $(NPROC) > logs/$(*)_vars.log
 
 SNPS.list: $(VARS)
-	find vars/ -maxdepth 1 -iname snps_final.vcf > SNPS.list
+	find vars/ -maxdepth 1 -iname *snps_final.vcf > SNPS.list
 
 .PHONY: vars
 
@@ -68,7 +68,7 @@ vars:
 ## de novo assembly
 
 de_novo/%_spades.fna: fq/%_1.fastq fq/%_2.fastq
-	scripts/assemble.sh $* $(NPROC) > logs/$(*)_spades.log
+	scripts/assemble.sh $* $(REF) $(NPROC) > logs/$(*)_spades.log
 
 assemblies.list: $(ASSEMBLIES)
 	find de_novo/ -maxdepth 1 -iname *_spades.fna > assemblies.list
