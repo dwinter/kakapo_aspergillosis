@@ -8,7 +8,8 @@ ST_IDX = $(addsuffix .fai, $(REF))
 # set up lists of samples, .bams and final and de novo assemblies
 SAMPLE_LIST := $(shell cat sample_info)
 BAM=$(addsuffix .bam, $(addprefix bam/, $(SAMPLE_LIST)))
-VARS=$(addsuffix _filtered_snps_final.vcf, $(addprefix vars/, $(SAMPLE_LIST)))
+VARS=$(addsuffix _filtered_snps_final.vcf.gz, $(addprefix vars/, $(SAMPLE_LIST)))
+VARS_GZ=$(addsuffix $(VARS), .gz)
 ASSEMBLIES=$(addsuffix _spades.fna, $(addprefix de_novo/, $(SAMPLE_LIST)))
 
 
@@ -39,7 +40,7 @@ indices: $(REF)
 # Not sure if there is a better way to handle multi-target recipies. Workaround
 # here is to create a recipe (bams.list) that depends on all bam files
 #
-bam/%.bam: fq/%_1.fastq fq/%_2.fastq include/picard.jar indices
+bam/%.bam: fq/%_1.fastq.gz fq/%_2.fastq.gz include/picard.jar $(DICT) $(BWA_IDX) $(ST_IDX)
 	scripts/make_bam.sh $* $(REF) $(NPROC) > logs/$(*)_ali.log 
 
 bams.list: $(BAM)
@@ -50,11 +51,13 @@ bams.list: $(BAM)
 alignments:
 	$(MAKE) bams.list
 
+
+
 ## Variant calling
 #
 # This recpe produces many files, recipe is written just for the 'final' SNPs
 
-vars/%_filtered_snps_final.vcf: bam/%.bam
+vars/%_filtered_snps_final.vcf.gz: bam/%.bam
 	scripts/call_vars.sh bam/$(*).bam $(REF) $(NPROC) > logs/$(*)_vars.log
 
 SNPS.list: $(VARS)
@@ -67,7 +70,7 @@ vars:
 
 ## de novo assembly
 
-de_novo/%_spades.fna: fq/%_1.fastq fq/%_2.fastq
+de_novo/%_spades.fna: fq/%_1.fastq.gz fq/%_2.fastq.gz
 	scripts/assemble.sh $* $(REF) $(NPROC) > logs/$(*)_spades.log
 
 assemblies.list: $(ASSEMBLIES)
@@ -80,7 +83,15 @@ assemble:
 
 .PHONY: all
 
+vars/merged_SNPS.vcf: $(VARS)
+	vcf-merge -R "0" $(VARS) > vars/merged_SNPS.vcf
+
 all:
 	$(MAKE) alignments
 	$(MAKE) vars
 	$(MAKE) assemble
+	$(MAKE) vars/merged_SNPS.vcf
+
+clean_tempfiles:
+	rm  vars/temp/*
+	rm  bam/temp/*
