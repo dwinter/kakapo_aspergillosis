@@ -63,6 +63,9 @@ grep PASS vars/${SAMPLE}_filtered_indels_final.vcf | awk
 grep "#" vars/${SAMPLE}_filtered_indels_final.vcf > vars/${SAMPLE}_final_indels.head
 cat vars/${SAMPLE}_final_indels.head vars/${SAMPLE}_final_indels.body > vars/${SAMPLE}_final_indels.vcf
 
+#zip and index SNPs
+bgzip vars/${SAMPLE}_filtered_snps_final.vcf 
+tabix -p vcf varsvars/${SAMPLE}_filtered_snps_final.vcf.gz
 
 gatk -T DepthOfCoverage -I ${RECAL_BAM} -o stats/${sample}_coverage -R ${REF}
 samtools flagstat ${RECAL_BAM} > stats/${sample}_flagstat
