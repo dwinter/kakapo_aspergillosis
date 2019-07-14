@@ -15,8 +15,8 @@
 SAMPLE=$1
 REF=$2
 NPROC=$3
-R1=fq/${SAMPLE}_1.fastq
-R2=fq/${SAMPLE}_2.fastq
+R1=fq/${SAMPLE}_1.fastq.gz
+R2=fq/${SAMPLE}_2.fastq.gz
 RG="@RG\tID:${SAMPLE}\tSM:${SAMPLE}\tPL:Illumina\tLB:${SAMPLE}"
 #Align
 echo bwa mem -M -t ${NPROC} -R "${RG}" ${REF} ${R1} ${R2} 
