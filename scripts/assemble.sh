@@ -14,7 +14,7 @@ NPROC=$3
 R1=fq/${SAMPLE}_1.fastq.gz
 R2=fq/${SAMPLE}_2.fastq.gz
 
-spades.py -t ${NPROC} -m 24 -k  33,55,77,99,127 --careful --pe1-1 ${R1} --pe1-2 ${R2} -o de_novo/${SAMPLE}
+spades.py -t ${NPROC} -m 30 -k  33,55,77,99,127 --careful --pe1-1 ${R1} --pe1-2 ${R2} -o de_novo/${SAMPLE}
 quast -t ${NPROC} -r ${REF} -o de_novo/${SAMPLE}/quast  de_novo/${SAMPLE}/scaffolds.fasta
 grep -f to_keep de_novo/${SAMPLE}/quast/report.tsv   | cut -f2 | paste <(printf ${SAMPLE}'\n%.0s' {1..5}) new_cols - >> stats/assembly_stats.tsv
 scripts/discard_chaff.py de_novo/${SAMPLE}/scaffolds.fasta 500 > de_novo/${SAMPLE}_spades.fna

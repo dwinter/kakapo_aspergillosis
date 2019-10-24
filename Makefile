@@ -83,14 +83,24 @@ assemble:
 
 .PHONY: all
 
-vars/merged_SNPS.vcf: $(VARS)
-	vcf-merge -R "0" $(VARS) > vars/merged_SNPS.vcf
-
 all:
 	$(MAKE) alignments
 	$(MAKE) vars
 	$(MAKE) assemble
 	$(MAKE) vars/merged_SNPS.vcf
+
+vars/merged_SNPS.vcf: $(VARS)
+	vcf-merge -R "0" $(VARS) > vars/merged_SNPS.vcf
+
+
+popgen/STRUCTURE.done:
+	$(MAKE) vars/merged_SNPS.vcf
+	# This gets a bit hacky...
+	#really need to work out why pyVCF is failing in python3...
+	python2 scripts/vcf_to_STRUCTURE.py popgen/merged
+	cd popgen/
+	seq 2 10 | parallel -j $(NRPOC) ../scripts/run_STRUCTURE_pa.sh {}
+
 
 clean_tempfiles:
 	rm  vars/temp/*
