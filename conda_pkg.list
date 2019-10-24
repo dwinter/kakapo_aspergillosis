@@ -6,6 +6,8 @@ spades=3.13.1
 biopython=1.68
 vcftools=0.1.16
 perl-vcftools-vcf=0.1.16
+pyvcf
+structure
 #this version not avail on bioconda?
 #picard=2.6.0
 
